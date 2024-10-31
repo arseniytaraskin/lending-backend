@@ -9,3 +9,10 @@ class TextBlock(models.Model):
 
     def __str__(self):
         return self.title
+
+class ImageBlock(models.Model):
+    image = models.ImageField(upload_to='images/')
+    description = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.description or "Image Block"
