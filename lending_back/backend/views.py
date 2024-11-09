@@ -27,8 +27,8 @@ def update_text_blocks(request, pk):
     except TextBlock.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-
-    serializer = TextBlockSerializer(text_block, data=request.data)
+    data = {key: value for key, value in request.data.items() if value is not None}
+    serializer = TextBlockSerializer(text_block, data=data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
