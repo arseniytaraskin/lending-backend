@@ -2,11 +2,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from .views import *
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('backend.urls'))
+    path('api/', include('backend.urls')),
+    path('api/submit-application/', SubmitApplicationView.as_view(), name='submit_application'),
 ]
 
 if settings.DEBUG:

@@ -40,3 +40,13 @@ class ImageBlock(models.Model):
 
     def __str__(self):
         return self.description or "Image Block"
+
+
+class Application(models.Model):
+    full_name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField()
+    organization = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
