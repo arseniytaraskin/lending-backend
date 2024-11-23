@@ -4,6 +4,12 @@ from django.db import models
 
 from django.db import models
 
+class Frame(models.Model):
+    is_enabled = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+    style = models.JSONField(blank=True)
+
+
 class TextBlock(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()

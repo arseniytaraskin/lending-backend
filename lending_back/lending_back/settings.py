@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'backend',
     'corsheaders',
+     'pip install drf-yasg',
 ]
 
 MIDDLEWARE = [
