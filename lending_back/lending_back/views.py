@@ -117,7 +117,7 @@ def call_huggingface_api(prompt: str, retries=5, wait_time=5):
         raise ValueError("HF_API_TOKEN не найден. Проверьте .env файл.")
 
 
-    url = "https://api-inference.huggingface.co/models/MTSAIR/Cotype-Nano"
+    url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-Coder-32B-Instruct"
 
 
     headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
