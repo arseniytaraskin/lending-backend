@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/', include('backend.urls')),
     path('api/submit-application/', SubmitApplicationView.as_view(), name='submit_application'),
     path("api/generate-text/", generate_text_view, name="generate_text"),
+    path("api/generate-image/", generate_image_view, name="generate_image")
 
 ]
 

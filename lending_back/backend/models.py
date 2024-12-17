@@ -56,3 +56,19 @@ class Application(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+
+class Experiment(models.Model):
+    name = models.CharField(max_length=255) #название эксперимента
+    target_metric = models.CharField(max_length=255) #целевой показатель
+    variants = models.JSONField()  # ["A", "B"]
+    status = models.CharField(max_length=50, choices=[('active', 'Active'), ('paused', 'Paused'), ('completed', 'Completed')])
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+
+class UserAssignment(models.Model): #модель для отслеживания пользователей
+    user_id = models.CharField(max_length=255)
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    variant = models.CharField(max_length=10)
+
+
+

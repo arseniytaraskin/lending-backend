@@ -34,6 +34,15 @@ def update_text_blocks(request, pk):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['DELETE'])
+def delete_text_block(request, pk):
+    try:
+        text_block = TextBlock.objects.get(pk=pk)
+    except TextBlock.DoesNotExist:
+        return Response({"error": "Текстовый блок не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+    text_block.delete()
+    return Response({"message": "Текстовый блок успешно удален"}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def get_images(request):
@@ -70,3 +79,16 @@ def add_image(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['DELETE'])
+def delete_image(request, pk):
+    try:
+        image_block = ImageBlock.objects.get(pk=pk)
+    except ImageBlock.DoesNotExist:
+        return Response({"error": "Изображение не найдено"}, status=status.HTTP_404_NOT_FOUND)
+
+    if image_block.image:
+        image_block.image.delete(save=False)
+
+    image_block.delete()
+    return Response({"message": "Изображение успешно удалено"}, status=status.HTTP_200_OK)

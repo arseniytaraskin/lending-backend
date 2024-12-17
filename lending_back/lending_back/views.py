@@ -151,3 +151,54 @@ def call_huggingface_api(prompt: str, retries=5, wait_time=5):
             raise ValueError(f"Ошибка API Hugging Face: {response.status_code}, {response.text}")
 
     raise ValueError("Модель недоступна после нескольких попыток.")
+
+
+
+load_dotenv()
+
+HF_API_TOKEN = os.getenv("HF_API_TOKEN")
+
+@csrf_exempt
+def generate_image_view(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            prompt = data.get("prompt", "An artistic depiction of a sunset over mountains")
+
+            if not prompt:
+                return JsonResponse({"error": "Описание изображения отсутствует."}, status=400)
+
+            image_url = call_huggingface_image_api(prompt)
+            return JsonResponse({"image_url": image_url}, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Метод не поддерживается."}, status=405)
+
+
+def call_huggingface_image_api(prompt: str, retries=3, wait_time=5):
+
+    if not HF_API_TOKEN:
+        raise ValueError("HF_API_TOKEN не найден. Проверьте .env файл.")
+
+    url = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2"
+
+    headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
+    payload = {"inputs": prompt}
+
+    for attempt in range(retries):
+        response = requests.post(url, headers=headers, json=payload)
+        print(f"Response {attempt+1}: {response.status_code} - {response.text}")
+
+        if response.status_code == 200:
+            try:
+                return response.json()[0]["generated_image"]
+            except (json.JSONDecodeError, IndexError):
+                raise ValueError("Ошибка декодирования JSON или отсутствуют данные изображения.")
+        elif response.status_code == 503:
+            time.sleep(wait_time)
+        else:
+            raise ValueError(f"Ошибка API Hugging Face: {response.status_code}, {response.text}")
+
+    raise ValueError("Модель недоступна после нескольких попыток.")
