@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'backend',
     'corsheaders',
     'drf_spectacular',
-    'custom_auth'
+    'custom_auth',
+    'email_sender',
 ]
 
 MIDDLEWARE = [
@@ -210,3 +211,10 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = "custom_auth.User"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_USER = 'TEST'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = 'TEST'
+EMAIL_USE_TLS = True

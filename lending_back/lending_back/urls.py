@@ -12,7 +12,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('backend.urls')),
     # path('api/submit-application/', SubmitApplicationView.as_view(), name='submit_application'),
-    path('api/auth/', include("custom_auth.urls", namespace='auth')),
+    path('api/auth/', include("custom_auth.urls", namespace='auth',)),
+    path('api/user/', include("custom_auth.user_urls", namespace='user', )),
+    path('api/email/', include("email_sender.urls", namespace='email')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs')
 ]

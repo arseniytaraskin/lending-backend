@@ -5,8 +5,10 @@ app_name = "auth"
 
 urlpatterns = [
     path('login', loginView),
-    path('register', registerView),
     path('refresh', CookieTokenRefreshView.as_view()),
     path('logout', logoutView),
     path("user", user),
+    path("admin", admin),
+    path("staff", staff),
+    path("superuser", superuser),
 ]

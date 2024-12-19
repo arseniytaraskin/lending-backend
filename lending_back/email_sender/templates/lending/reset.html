@@ -1,0 +1,90 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Восстановление пароля</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e9f7fb;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto; /* Отступы сверху и снизу */
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+        }
+        h1 {
+            color: #007BFF;
+            font-size: 26px;
+            margin-top: 0;
+        }
+        p {
+            line-height: 1.6;
+            font-size: 16px;
+            text-align: left;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+            text-align: center;
+        }
+        .logo {
+            margin: 0 auto 20px;
+            width: 150px;
+            display: block;
+        }
+        .button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .highlight {
+            background-color: #f0f5ff;
+            border-left: 4px solid #007BFF;
+            padding: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <table width="100%" cellspacing="0" cellpadding="0" bgcolor="#e9f7fb">
+        <tr>
+            <td>
+                <div class="container">
+                    <img src="https://downloader.disk.yandex.ru/preview/066f9657a104a1be9a71e69fd88a73653b40b960c060f0758b371620dd53fa8f/6758df96/Uafm12_x9VLnN0Akq2MvWMyzHEvc1vhrRy7RlmCcmqnvUQ_tq_ad9H5A65pHWA7ohqoaSHZPsx5TPMsY63Q6sQ%3D%3D?uid=0&filename=Frame%201000.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=0&tknv=v2&size=2048x2048" alt="Логотип компании" class="logo">
+                    <div class="header">
+                        <h1>Восстановление пароля</h1>
+                    </div>
+                    <p>Здравствуйте, {{ user_name }}!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашей учетной записи.</p>
+                    <div class="highlight">
+                      <p><strong>Чтобы восстановить пароль, пожалуйста, нажмите на кнопку ниже:</strong></p>
+                    </div>
+                    <a href="{{ reset_link }}" class="button">Восстановить пароль</a>
+                    <p>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</p>
+                    <div class="footer">
+                        <p>&copy; Открытые идеи. Все права защищены.</p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
