@@ -45,10 +45,28 @@ def delete_text_block(request, pk):
     return Response({"message": "Текстовый блок успешно удален"}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
+def get_text_block_by_id(request, pk):
+    try:
+        text_block = TextBlock.objects.get(pk=pk)
+        serializer = TextBlockSerializer(text_block)
+        return Response(serializer.data)
+    except:
+        return Response({"error": "Текстовый блок не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
 def get_images(request):
     images = ImageBlock.objects.all()
     serialized_images = [{'id': image.id, 'image': image.image.url} for image in images]
     return JsonResponse(serialized_images, safe=False)
+
+def get_image_by_id(request, pk):
+    try:
+        image_block = ImageBlock.objects.get(pk=pk)
+
+        serialized_image = {'id': image_block.id, 'image': image_block.image.url}
+        return JsonResponse(serialized_image, safe=False)
+    except ImageBlock.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['PUT', 'PATCH'])
 def update_image(request, pk):
