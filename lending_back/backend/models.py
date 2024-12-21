@@ -4,10 +4,31 @@ from django.db import models
 
 from django.db import models
 
+from django.contrib.contenttypes.fields import GenericForeignKey #
+from django.contrib.contenttypes.models import ContentType #позволит мне определить тип модели во время выполнения
+
 class Frame(models.Model):
     is_enabled = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
     style = models.JSONField(blank=True)
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return f"Frame {self.id} - Enabled: {self.is_enabled}"
+
+
+class TemplateBlock(models.Model): # для шаблонных блоков
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    default_content = models.JSONField()  # JSON-описание, что включает шаблон
+
+    def __str__(self):
+        return self.name
+
+
 
 
 class TextBlock(models.Model):
@@ -55,20 +76,6 @@ class Application(models.Model):
     organization = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-
-
-class Experiment(models.Model):
-    name = models.CharField(max_length=255)
-    target_metric = models.CharField(max_length=255)
-    variants = models.JSONField()  # ["A", "B"]
-    status = models.CharField(max_length=50, choices=[('active', 'Active'), ('paused', 'Paused'), ('completed', 'Completed')])
-    start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField(null=True, blank=True)
-
-class UserAssignment(models.Model):
-    user_id = models.CharField(max_length=255)
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    variant = models.CharField(max_length=10)
 
 
 

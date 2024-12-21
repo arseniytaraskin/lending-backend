@@ -154,6 +154,13 @@ def call_huggingface_api(prompt: str, retries=5, wait_time=5):
 
 
 
+import time
+import json
+import requests
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from dotenv import load_dotenv
+
 load_dotenv()
 
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
@@ -176,29 +183,37 @@ def generate_image_view(request):
 
     return JsonResponse({"error": "Метод не поддерживается."}, status=405)
 
-
-def call_huggingface_image_api(prompt: str, retries=3, wait_time=5):
-
+def call_huggingface_image_api(prompt: str, retries=5, wait_time=10):
     if not HF_API_TOKEN:
         raise ValueError("HF_API_TOKEN не найден. Проверьте .env файл.")
 
-    url = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2"
+    url = "https://api-inference.huggingface.co/models/Datou1111/shou_xin"  # URL модели
 
     headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
     payload = {"inputs": prompt}
 
     for attempt in range(retries):
-        response = requests.post(url, headers=headers, json=payload)
-        print(f"Response {attempt+1}: {response.status_code} - {response.text}")
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=120)  # Увеличен тайм-аут
 
-        if response.status_code == 200:
-            try:
-                return response.json()[0]["generated_image"]
-            except (json.JSONDecodeError, IndexError):
-                raise ValueError("Ошибка декодирования JSON или отсутствуют данные изображения.")
-        elif response.status_code == 503:
+            print(f"Response {attempt + 1}: {response.status_code} - {response.text}")
+
+            if response.status_code == 200:
+                # Попробуем распечатать ответ для отладки
+                response_data = response.json()
+                print("Response Data:", response_data)
+                # Предполагаем, что в ответе будет изображение или URL изображения
+                return response_data[0].get("generated_image", "Изображение не получено.")
+
+            elif response.status_code == 503:
+                print(f"Сервер недоступен, попытка {attempt + 1} из {retries}. Попробую снова через {wait_time} секунд.")
+                time.sleep(wait_time)
+            else:
+                raise ValueError(f"Ошибка API Hugging Face: {response.status_code}, {response.text}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка при запросе: {e}")
             time.sleep(wait_time)
-        else:
-            raise ValueError(f"Ошибка API Hugging Face: {response.status_code}, {response.text}")
 
     raise ValueError("Модель недоступна после нескольких попыток.")
+
