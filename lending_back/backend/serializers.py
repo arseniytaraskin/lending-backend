@@ -4,14 +4,7 @@ from .models import TextBlock, ImageBlock, Frame, TemplateBlock
 class TextBlockSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextBlock
-        #fields = ['id', 'title', 'content', 'is_enabled']
-        #fields = ['content']
-
-        fields = [
-            'id', 'title', 'content', 'is_enabled',
-            'font_family', 'font_size', 'font_weight', 'font_style', 'color',
-            'line_height', 'text_align', 'list_type', 'link'
-        ]
+        fields = ['id', 'title', 'content', 'is_enabled', 'styles']
 
 class ImageBlockSerializer(serializers.ModelSerializer):
     class Meta:

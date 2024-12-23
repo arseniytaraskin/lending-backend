@@ -21,18 +21,27 @@ def add_text_blocks(request):
 
 @api_view(['PUT'])
 def update_text_blocks(request, pk):
-    #сначал проверю есть ли в целом текстовый блок под указанным id на странице
+    # Проверка существования текстового блока
     try:
         text_block = TextBlock.objects.get(pk=pk)
     except TextBlock.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "TextBlock not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    data = {key: value for key, value in request.data.items() if value is not None}
+    # Обновление блока
+    data = request.data
+    if "styles" in data:
+
+        existing_styles = text_block.styles or {}
+        new_styles = data.get("styles", {})
+        updated_styles = {**existing_styles, **new_styles}  # Слияние стилей
+        data["styles"] = updated_styles
+
     serializer = TextBlockSerializer(text_block, data=data, partial=True)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 def delete_text_block(request, pk):
