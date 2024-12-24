@@ -9,7 +9,7 @@ class TextBlockSerializer(serializers.ModelSerializer):
 class ImageBlockSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageBlock
-        fields = ['id', 'image', 'description']
+        fields = ['id', 'image', 'description', 'is_enabled', 'styles']
 
 
 from django.contrib.contenttypes.models import ContentType

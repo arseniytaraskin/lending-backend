@@ -65,17 +65,32 @@ def get_text_block_by_id(request, pk):
 @api_view(['GET'])
 def get_images(request):
     images = ImageBlock.objects.all()
-    serialized_images = [{'id': image.id, 'image': image.image.url} for image in images]
+    serialized_images = [
+        {
+            'id': image.id,
+            'image': image.image.url,
+            'description': image.description,
+            'is_enabled': image.is_enabled,
+            'styles': image.styles
+        }
+        for image in images
+    ]
     return JsonResponse(serialized_images, safe=False)
 
+@api_view(['GET'])
 def get_image_by_id(request, pk):
     try:
         image_block = ImageBlock.objects.get(pk=pk)
-
-        serialized_image = {'id': image_block.id, 'image': image_block.image.url}
+        serialized_image = {
+            'id': image_block.id,
+            'image': image_block.image.url,
+            'description': image_block.description,
+            'is_enabled': image_block.is_enabled,
+            'styles': image_block.styles
+        }
         return JsonResponse(serialized_image, safe=False)
     except ImageBlock.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Изображение не найдено"}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['PUT', 'PATCH'])
 def update_image(request, pk):

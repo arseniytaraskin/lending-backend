@@ -34,7 +34,8 @@ class TextBlock(models.Model):
 class ImageBlock(models.Model):
     image = models.ImageField(upload_to='images/')
     description = models.CharField(max_length=255, blank=True)
-
+    is_enabled = models.BooleanField(default=True)
+    styles = models.JSONField(default=dict)
 
     def __str__(self):
         return self.description or "Image Block"
