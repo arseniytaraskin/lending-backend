@@ -119,3 +119,7 @@ def delete_image(request, pk):
 
     image_block.delete()
     return Response({"message": "Изображение успешно удалено"}, status=status.HTTP_200_OK)
+
+
+
+

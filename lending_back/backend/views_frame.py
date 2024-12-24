@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import FrameSerializer, TemplateBlockSerializer
-from .models import Frame, TemplateBlock
+from .serializers import FrameSerializer
+from .models import Frame
 
 @api_view(['GET'])
 def get_frames(request):
@@ -57,53 +57,62 @@ def delete_frame(request, pk):
 
 
 
-# ниже представления для шаблонных блоков
+#
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import ContentBlock
+from .serializers import ContentBlockSerializer
 
 @api_view(['GET'])
-def get_template_blocks(request):
-    template_blocks = TemplateBlock.objects.all()
-    serializer = TemplateBlockSerializer(template_blocks, many=True)
+def list_content_blocks(request):
+    blocks = ContentBlock.objects.filter(enabled=True).order_by('order')
+    serializer = ContentBlockSerializer(blocks, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def get_content_block(request, pk):
+
+    try:
+        block = ContentBlock.objects.get(pk=pk)
+    except ContentBlock.DoesNotExist:
+        return Response({"error": "Блок не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ContentBlockSerializer(block)
+    return Response(serializer.data)
 
 @api_view(['POST'])
-def add_template_block(request): # Создание нового шаблонного блока
-    serializer = TemplateBlockSerializer(data=request.data)
+def create_content_block(request):
+
+    serializer = ContentBlockSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['PUT'])
+def update_content_block(request, pk):
 
-@api_view(['GET'])
-def get_template_block_by_id(request, pk): # получение по id
     try:
-        template_block = TemplateBlock.objects.get(pk=pk)
-    except TemplateBlock.DoesNotExist:
-        return Response({'error': 'TemplateBlock not found'}, status=status.HTTP_404_NOT_FOUND)
-    serializer = TemplateBlockSerializer(template_block)
-    return Response(serializer.data)
+        block = ContentBlock.objects.get(pk=pk)
+    except ContentBlock.DoesNotExist:
+        return Response({"error": "Блок не найден"}, status=status.HTTP_404_NOT_FOUND)
 
-
-@api_view(['PATCH'])
-def update_template_block(request, pk):
-    try:
-        template_block = TemplateBlock.objects.get(pk=pk)
-    except TemplateBlock.DoesNotExist:
-        return Response({'error': 'TemplateBlock not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = TemplateBlockSerializer(template_block, data=request.data, partial=True)
+    serializer = ContentBlockSerializer(block, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['DELETE'])
-def delete_template_block(request, pk):
+def delete_content_block(request, pk):
+
     try:
-        template_block = TemplateBlock.objects.get(pk=pk)
-    except TemplateBlock.DoesNotExist:
-        return Response({'error': 'TemplateBlock not found'}, status=status.HTTP_404_NOT_FOUND)
-    template_block.delete()
-    return Response({'message': 'TemplateBlock deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        block = ContentBlock.objects.get(pk=pk)
+    except ContentBlock.DoesNotExist:
+        return Response({"error": "Блок не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+    block.delete()
+    return Response({"message": "Блок успешно удалён"}, status=status.HTTP_204_NO_CONTENT)
+

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TextBlock, ImageBlock, Frame, TemplateBlock
+from .models import TextBlock, ImageBlock, Frame, ContentBlock
 
 class TextBlockSerializer(serializers.ModelSerializer):
     class Meta:
@@ -59,8 +59,8 @@ class FrameSerializer(serializers.ModelSerializer):
 
 
 
-class TemplateBlockSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TemplateBlock
-        fields = ['id', 'name', 'description', 'default_content']
 
+class ContentBlockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContentBlock
+        fields = ['id', 'name', 'enabled', 'order', 'content']
