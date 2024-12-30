@@ -114,6 +114,17 @@ def add_image(request):
         if 'image' not in request.FILES:
             return Response({"error": "Пожалуйста, добавьте файл изображения"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # добавил проверку на то что переданный файл это картинка, а также выставил ограничение на размер передаваемого файла
+        uploaded_file = request.FILES['image']
+        max_size_mb = 10
+        if uploaded_file.size > max_size_mb * 1024 * 1024:
+            return Response({"error": f"Размер изображения не должен превышать {max_size_mb} МБ"}, status=status.HTTP_400_BAD_REQUEST)
+
+        allowed_content_types = ['image/jpeg', 'image/png']
+        if uploaded_file.content_type not in allowed_content_types:
+            return Response({"error": "Разрешены только изображения в формате JPEG и PNG"}, status=status.HTTP_400_BAD_REQUEST)
+
+
         serializer = ImageBlockSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
