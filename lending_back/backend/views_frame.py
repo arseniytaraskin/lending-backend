@@ -116,3 +116,58 @@ def delete_content_block(request, pk):
     block.delete()
     return Response({"message": "Блок успешно удалён"}, status=status.HTTP_204_NO_CONTENT)
 
+
+from rest_framework.views import APIView
+from .models import MainStyle
+from .serializers import MainStyleSerializer
+# для хранения стилей страницы
+class GetMainStylesView(APIView):
+    def get(self, request):
+        styles = MainStyle.objects.all()
+        serializer = MainStyleSerializer(styles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class GetMainStyleByIdView(APIView):
+    def get(self, request, pk):
+        try:
+            style = MainStyle.objects.get(pk=pk)
+        except MainStyle.DoesNotExist:
+            return Response({"error": "Стиль не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = MainStyleSerializer(style)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class PostMainStyleView(APIView):
+    def post(self, request):
+        serializer = MainStyleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PatchMainStyleView(APIView):
+
+    def patch(self, request, pk):
+        try:
+            style = MainStyle.objects.get(pk=pk)
+        except MainStyle.DoesNotExist:
+            return Response({"error": "Стиль не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = MainStyleSerializer(style, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteMainStyleView(APIView):
+
+    def delete(self, request, pk):
+        try:
+            style = MainStyle.objects.get(pk=pk)
+        except MainStyle.DoesNotExist:
+            return Response({"error": "Стиль не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+        style.delete()
+        return Response({"message": "Стиль успешно удален"}, status=status.HTTP_204_NO_CONTENT)

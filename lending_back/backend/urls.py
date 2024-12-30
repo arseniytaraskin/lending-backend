@@ -26,4 +26,10 @@ urlpatterns = [
     path('frames/<int:pk>/update/', update_frame, name='update_frame'),
     path('frames/<int:pk>/delete/', delete_frame, name='delete_frame'),
 
+    path('styles/', GetMainStylesView.as_view(), name='get_styles'),
+    path('styles/add/', PostMainStyleView.as_view(), name='post_style'),
+    path('styles/update/<int:pk>/', PatchMainStyleView.as_view(), name='update_style'),
+    path('styles/delete/<int:pk>/', DeleteMainStyleView.as_view(), name='delete_style'),
+    path('styles/<int:pk>/', GetMainStyleByIdView.as_view(), name='get_style_by_id'),
+
 ]

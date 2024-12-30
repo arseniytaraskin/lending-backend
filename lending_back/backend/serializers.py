@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TextBlock, ImageBlock, Frame, ContentBlock
+from .models import TextBlock, ImageBlock, Frame, ContentBlock, MainStyle
 
 class TextBlockSerializer(serializers.ModelSerializer):
     class Meta:
@@ -64,3 +64,9 @@ class ContentBlockSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContentBlock
         fields = ['id', 'name', 'enabled', 'order', 'content']
+
+
+class MainStyleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MainStyle
+        fields = '__all__'

@@ -41,6 +41,8 @@ class ImageBlock(models.Model):
         return self.description or "Image Block"
 
 
+
+
 class Application(models.Model):
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
@@ -59,4 +61,11 @@ class ContentBlock(models.Model):
     class Meta:
         ordering = ['order']  # по умолчанию сортировка по полю order
 
+
+class MainStyle(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    styles = models.JSONField(default=dict)
+
+    def __str__(self):
+        return self.name
 
