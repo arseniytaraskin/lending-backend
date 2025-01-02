@@ -34,6 +34,9 @@ def send_telegram_notification(message: str):
         print(f"Ошибка Telegram API: {response.status_code}, {response.text}")
 
 
+
+SEND_TELEGRAM_NOTIFICATIONS = True
+
 class SubmitApplicationView(APIView):
     def post(self, request):
         try:
@@ -43,7 +46,6 @@ class SubmitApplicationView(APIView):
             phone_number = request.data.get('phone_number', '').strip()
             email = request.data.get('email', '').strip()
             organization = request.data.get('organization', '').strip()
-
 
 
             if not full_name or not phone_number or not email:
@@ -57,16 +59,25 @@ class SubmitApplicationView(APIView):
             service = build("sheets", "v4", credentials=credentials)
             sheet = service.spreadsheets()
 
-
             values = [[full_name, phone_number, email, organization, submission_time]]
-
-
             response = sheet.values().append(
                 spreadsheetId=SPREADSHEET_ID,
                 range="Лист1!A1",
                 valueInputOption="RAW",
                 body={"values": values}
             ).execute()
+
+
+            if SEND_TELEGRAM_NOTIFICATIONS:
+                message = (
+                    f"📥 <b>Новая заявка</b>\n"
+                    f"👤 <b>Имя:</b> {full_name}\n"
+                    f"📞 <b>Телефон:</b> {phone_number}\n"
+                    f"✉️ <b>Email:</b> {email}\n"
+                    f"🏢 <b>Организация:</b> {organization or 'Не указано'}\n"
+                    f"⏰ <b>Время:</b> {submission_time}"
+                )
+                send_telegram_notification(message)
 
             return Response({"message": "Application submitted successfully"}, status=status.HTTP_200_OK)
         except Exception as e:
