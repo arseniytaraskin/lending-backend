@@ -37,6 +37,7 @@ def send_telegram_notification(message: str):
 
 SEND_TELEGRAM_NOTIFICATIONS = True
 
+
 class SubmitApplicationView(APIView):
     def post(self, request):
         try:

@@ -4,13 +4,18 @@ from rest_framework import status
 from .serializers import FrameSerializer
 from .models import Frame
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+
 @api_view(['GET'])
 def get_frames(request):
     frames = Frame.objects.filter(is_enabled=True).order_by('order')
     serializer = FrameSerializer(frames, many=True)
     return Response(serializer.data)
 
-
+@extend_schema(
+    request=FrameSerializer,
+    responses={201: FrameSerializer},
+)
 @api_view(['POST'])
 def add_frame(request):
     serializer = FrameSerializer(data=request.data)
@@ -30,7 +35,10 @@ def get_frame_by_id(request, pk):    # Получение конкретного
     serializer = FrameSerializer(frame)
     return Response(serializer.data)
 
-
+@extend_schema(
+    request=FrameSerializer,
+    responses={201: FrameSerializer},
+)
 @api_view(['PATCH'])
 def update_frame(request, pk):
     try:
@@ -65,6 +73,10 @@ from rest_framework import status
 from .models import ContentBlock
 from .serializers import ContentBlockSerializer
 
+@extend_schema(
+    request=ContentBlockSerializer,
+    responses={201: ContentBlockSerializer},
+)
 @api_view(['GET'])
 def list_content_blocks(request):
     blocks = ContentBlock.objects.filter(enabled=True).order_by('order')
@@ -82,6 +94,10 @@ def get_content_block(request, pk):
     serializer = ContentBlockSerializer(block)
     return Response(serializer.data)
 
+@extend_schema(
+    request=ContentBlockSerializer,
+    responses={201: ContentBlockSerializer},
+)
 @api_view(['POST'])
 def create_content_block(request):
 
@@ -91,6 +107,10 @@ def create_content_block(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@extend_schema(
+    request=ContentBlockSerializer,
+    responses={201: ContentBlockSerializer},
+)
 @api_view(['PUT'])
 def update_content_block(request, pk):
 
@@ -121,6 +141,10 @@ from rest_framework.views import APIView
 from .models import MainStyle
 from .serializers import MainStyleSerializer
 # для хранения стилей страницы
+@extend_schema(
+    request=MainStyleSerializer,
+    responses={201: MainStyleSerializer},
+)
 class GetMainStylesView(APIView):
     def get(self, request):
         styles = MainStyle.objects.all()
@@ -138,6 +162,10 @@ class GetMainStyleByIdView(APIView):
         serializer = MainStyleSerializer(style)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+@extend_schema(
+    request=MainStyleSerializer,
+    responses={201: MainStyleSerializer},
+)
 class PostMainStyleView(APIView):
     def post(self, request):
         serializer = MainStyleSerializer(data=request.data)
@@ -146,6 +174,10 @@ class PostMainStyleView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@extend_schema(
+    request=MainStyleSerializer,
+    responses={201: MainStyleSerializer},
+)
 class PatchMainStyleView(APIView):
 
     def patch(self, request, pk):

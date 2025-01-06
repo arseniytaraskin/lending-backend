@@ -5,12 +5,22 @@ from .models import TextBlock, ImageBlock
 from .serializers import TextBlockSerializer, ImageBlockSerializer
 from django.http import JsonResponse
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+
+@extend_schema(
+    request=TextBlockSerializer,
+    responses={201: TextBlockSerializer},
+)
 @api_view(['GET'])
 def get_text_blocks(request):
     blocks = TextBlock.objects.filter(is_enabled=True)
     serializer = TextBlockSerializer(blocks, many=True)
     return Response(serializer.data)
 
+@extend_schema(
+    request=TextBlockSerializer,  # Указание сериализатора для тела запроса
+    responses={201: TextBlockSerializer},
+)
 @api_view(['POST'])
 def add_text_blocks(request):
     serializer = TextBlockSerializer(data=request.data)
@@ -19,6 +29,10 @@ def add_text_blocks(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@extend_schema(
+    request=TextBlockSerializer,
+    responses={201: TextBlockSerializer},
+)
 @api_view(['PUT'])
 def update_text_blocks(request, pk):
     # Проверка существования текстового блока
@@ -42,7 +56,10 @@ def update_text_blocks(request, pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@extend_schema(
+    request=TextBlockSerializer,
+    responses={201: TextBlockSerializer},
+)
 @api_view(['DELETE'])
 def delete_text_block(request, pk):
     try:
@@ -53,6 +70,10 @@ def delete_text_block(request, pk):
     text_block.delete()
     return Response({"message": "Текстовый блок успешно удален"}, status=status.HTTP_200_OK)
 
+@extend_schema(
+    request=TextBlockSerializer,
+    responses={201: TextBlockSerializer},
+)
 @api_view(['GET'])
 def get_text_block_by_id(request, pk):
     try:
@@ -62,6 +83,10 @@ def get_text_block_by_id(request, pk):
     except:
         return Response({"error": "Текстовый блок не найден"}, status=status.HTTP_404_NOT_FOUND)
 
+@extend_schema(
+    request=ImageBlockSerializer,
+    responses={201: ImageBlockSerializer},
+)
 @api_view(['GET'])
 def get_images(request):
     images = ImageBlock.objects.all()
@@ -77,6 +102,10 @@ def get_images(request):
     ]
     return JsonResponse(serialized_images, safe=False)
 
+@extend_schema(
+    request=ImageBlockSerializer,
+    responses={201: ImageBlockSerializer},
+)
 @api_view(['GET'])
 def get_image_by_id(request, pk):
     try:
@@ -92,6 +121,10 @@ def get_image_by_id(request, pk):
     except ImageBlock.DoesNotExist:
         return Response({"error": "Изображение не найдено"}, status=status.HTTP_404_NOT_FOUND)
 
+@extend_schema(
+    request=ImageBlockSerializer,
+    responses={201: ImageBlockSerializer},
+)
 @api_view(['PUT', 'PATCH'])
 def update_image(request, pk):
     try:
@@ -107,7 +140,10 @@ def update_image(request, pk):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@extend_schema(
+    request=ImageBlockSerializer,
+    responses={201: ImageBlockSerializer},
+)
 @api_view(['POST'])
 def add_image(request):
     try:
@@ -133,6 +169,10 @@ def add_image(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@extend_schema(
+    request=ImageBlockSerializer,
+    responses={201: ImageBlockSerializer},
+)
 @api_view(['DELETE'])
 def delete_image(request, pk):
     try:
